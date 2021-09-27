@@ -4,6 +4,9 @@
 
 ## [Unreleased]
 
+## [0.0.2]
+Hello World
+
 ## [0.0.1]
 ### Added
 - Many awesome things

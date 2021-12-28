@@ -1,0 +1,45 @@
+name: Nightly Release
+on:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+
+  # Run reusable test workflow
+  test:
+    name: Test
+    uses: JetBrains/gradle-intellij-plugin/.github/workflows/reusable-test.yml@master
+
+  # Prepare and publish the Gradle Plugins repository
+  release:
+    name: Release to Gradle Plugins
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+
+      # Check out current repository
+      - name: Fetch Sources
+        uses: actions/checkout@v2.4.0
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      # Setup Java 8 environment for the next steps
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 11
+          cache: gradle
+
+      # Publish the plugin to the Gradle Plugins
+      - name: Publish Plugin
+        env:
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        run: ./gradlew publish -Psnapshot=true -PossrhUsername=$OSSRH_USERNAME -PossrhPassword=$OSSRH_PASSWORD
+
+      # Store already-built plugin as an artifact for downloading
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          path: ./build/libs/*-SNAPSHOT.jar

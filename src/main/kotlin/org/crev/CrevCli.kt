@@ -16,16 +16,15 @@ import org.rust.openapiext.RsPathManager
 import java.io.PrintWriter
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
 
 class CargoCrevCli(
     toolchain: RsToolchainBase
 ) {
     private val cargo = toolchain.cargo()
     private val cargoExecutablePath: String = cargo.executable.toString()
-    private val tempProject = RsPathManager.tempPluginDirInSystem().resolve("cargo-crev-helper-repo")
-    private val reviewDraft = RsPathManager.tempPluginDirInSystem().resolve("cargo-crev-review-draft.yaml")
-    private val editorMock = RsPathManager.tempPluginDirInSystem().resolve("cat-cargo-crev-review-draft-to-file.sh")
+    private val tempProject: Path = RsPathManager.tempPluginDirInSystem().resolve("cargo-crev-helper-repo")
+    private val reviewDraft: Path = RsPathManager.tempPluginDirInSystem().resolve("cargo-crev-review-draft.yaml")
+    private val editorMock: Path = RsPathManager.tempPluginDirInSystem().resolve("cat-cargo-crev-review-draft-to-file.sh")
 
     init {
         if (!tempProject.resolve("Cargo.toml").exists()) {
@@ -53,7 +52,7 @@ class CargoCrevCli(
         return process
     }
 
-    fun execute(vararg args: String): Process {
+    private fun execute(vararg args: String): Process {
         return execute0("crev", *args)
     }
 
@@ -85,12 +84,13 @@ class CargoCrevCli(
         val builder = ProcessBuilder(cargoExecutablePath, "crev", "id", "current")
         val process = builder.start()
         val status = process.waitFor()
-        if (status == 0) {
+
+        return if (status == 0) {
             val resultRaw = process.inputStream.bufferedReader().readText()
             // TODO: we're assuming here that only one id is returned. that might not be true in general.
-            return resultRaw.split(" ")[0]
+            resultRaw.split(" ")[0]
         } else {
-            return null
+            null
         }
     }
 

@@ -11,6 +11,9 @@ import com.intellij.util.TextFieldCompletionProvider
 import org.rust.toml.crates.local.CratesLocalIndexException
 import org.rust.toml.crates.local.CratesLocalIndexService
 
+/**
+ * Completes crates names from Crates Local Index for alternatives
+ */
 class CrevCrateCompletionProvider : TextFieldCompletionProvider() {
     override fun getPrefix(currentTextPrefix: String): String =
         currentTextPrefix.substringAfterLast(",").trim()

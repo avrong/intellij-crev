@@ -11,6 +11,6 @@
     <extensions defaultExtensionNs="com.intellij">
         <codeInsight.lineMarkerProvider language="TOML"
                                         implementationClass="org.crev.CrevReviewsLineMarkerProvider"/>
-        <toolWindow factoryClass="org.crev.CrevToolWindowFactory" id="Crev" anchor="right"/>
+        <toolWindow factoryClass="org.crev.toolwindow.CrevToolWindowFactory" id="Crev" anchor="right"/>
     </extensions>
 </idea-plugin>

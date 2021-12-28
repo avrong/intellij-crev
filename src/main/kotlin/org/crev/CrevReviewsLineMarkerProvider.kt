@@ -18,6 +18,9 @@ import org.rust.toml.tomlPluginIsAbiCompatible
 import org.toml.lang.psi.TomlKeyValue
 import org.toml.lang.psi.TomlTable
 
+/**
+ * Shows gutter icon heading to crev reviews on lib.rs in Cargo.toml
+ */
 class CrevReviewsLineMarkerProvider : LineMarkerProvider {
     override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<PsiElement>? {
         if (!tomlPluginIsAbiCompatible()) return null

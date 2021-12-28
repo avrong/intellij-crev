@@ -8,7 +8,7 @@ package org.crev
 import com.intellij.codeInsight.completion.CompletionResultSet
 import com.intellij.codeInsight.lookup.LookupElementBuilder
 import com.intellij.util.TextFieldCompletionProvider
-import org.rust.toml.crates.local.CratesLocalIndexException
+import org.rust.stdext.unwrapOrElse
 import org.rust.toml.crates.local.CratesLocalIndexService
 
 /**
@@ -19,11 +19,7 @@ class CrevCrateCompletionProvider : TextFieldCompletionProvider() {
         currentTextPrefix.substringAfterLast(",").trim()
 
     override fun addCompletionVariants(text: String, offset: Int, prefix: String, result: CompletionResultSet) {
-        val crateNames = try {
-            CratesLocalIndexService.getInstance().getAllCrateNames()
-        } catch (e: CratesLocalIndexException) {
-            return
-        }
+        val crateNames = CratesLocalIndexService.getInstance().getAllCrateNames().unwrapOrElse { return }
         result.addAllElements(crateNames.map { LookupElementBuilder.create(it) })
     }
 }
